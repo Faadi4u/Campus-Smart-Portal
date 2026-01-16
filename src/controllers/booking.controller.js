@@ -310,3 +310,54 @@ export const getMyBookingStats = asyncHandler(async (req, res) => {
 
   return res.status(200).json(new ApiResponse(200, summary, "My booking stats fetched"));
 });
+
+// --- Advanced Search Bookings ---
+export const searchBookings = asyncHandler(async (req, res) => {
+  const {
+    status,
+    resourceType,
+    resourceId,
+    userId,
+    startDate,
+    endDate,
+    page = 1,
+    limit = 10,
+  } = req.query;
+
+  const filter = {};
+
+  if (status) filter.status = status;
+  if (resourceType) filter.resourceType = resourceType;
+  if (resourceId) filter.resourceId = resourceId;
+  if (userId) filter.user = userId;
+
+  // Date range filter
+  if (startDate || endDate) {
+    filter.startTime = {};
+    if (startDate) filter.startTime.$gte = new Date(startDate);
+    if (endDate) filter.startTime.$lte = new Date(endDate);
+  }
+
+  const skip = (parseInt(page) - 1) * parseInt(limit);
+
+  const bookings = await Booking.find(filter)
+    .populate("user", "fullName email role")
+    .populate("resourceId", "name location capacity")
+    .sort({ startTime: -1 })
+    .skip(skip)
+    .limit(parseInt(limit));
+
+  const total = await Booking.countDocuments(filter);
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      bookings,
+      pagination: {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages: Math.ceil(total / parseInt(limit)),
+      },
+    }, "Bookings fetched")
+  );
+});

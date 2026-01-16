@@ -7,6 +7,7 @@ import {
   cancelMyBooking,
   getDashboardStats,
   getMyBookingStats,
+  searchBookings
 } from "../controllers/booking.controller.js";
 import { auth, requireRole } from "../middlewares/auth.middlewares.js";
 
@@ -22,6 +23,7 @@ router.patch("/:id/cancel", cancelMyBooking);
 
 // Admin routes
 router.get("/all", requireRole("admin"), getAllBookings);
+router.get("/search", requireRole("admin"), searchBookings);
 router.get("/dashboard", requireRole("admin"), getDashboardStats);
 router.patch("/:id/status", requireRole("admin"), updateBookingStatus);
 export const bookings =  router;

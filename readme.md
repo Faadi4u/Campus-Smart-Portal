@@ -56,6 +56,7 @@ Server runs at: `http://localhost:3000`
     - `POST /api/v1/rooms` – create room
   - Any authenticated user:
     - `GET  /api/v1/rooms` – list active rooms
+    - `GET  /api/v1/rooms/search` – search active rooms
 
 - ✅ **Bookings Module**
   - Booking model:
@@ -74,6 +75,8 @@ Server runs at: `http://localhost:3000`
     - `GET  /api/v1/bookings/all` – list all bookings
     - `PATCH /api/v1/bookings/:id/status` – approve/reject a booking
     - `GET  /api/v1/bookings/dashboard` – dashboard stats (overview + status summary, etc.)
+    - `GET  /api/v1/bookings/dashboard` – dashboard stats (overview + status summary, etc.)
+    - `GET  /api/v1/bookings/search` – Search all bookings
 
 ---
 
@@ -97,19 +100,27 @@ Basic health:
 
 GET http://localhost:3000/api/v1/healthz
 GET http://localhost:3000/api/v1/readyz
+
+
 Auth:
 
 POST http://localhost:3000/api/v1/auth/register
 POST http://localhost:3000/api/v1/auth/login
 GET http://localhost:3000/api/v1/auth/me (with Authorization: Bearer <token>)
+
+
 Rooms:
 
 POST http://localhost:3000/api/v1/rooms (admin)
 GET http://localhost:3000/api/v1/rooms (any logged-in user)
+POST http://localhost:3000/api/v1/rooms/search (Search active rooms) 
+
+
 Bookings:
 
 POST http://localhost:3000/api/v1/bookings (student/faculty)
 GET http://localhost:3000/api/v1/bookings/my-bookings
 GET http://localhost:3000/api/v1/bookings/my-stats
 GET http://localhost:3000/api/v1/bookings/all (admin)
+GET http://localhost:3000/api/v1/bookings/search (admin)
 GET http://localhost:3000/api/v1/bookings/dashboard (admin)
