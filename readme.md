@@ -96,31 +96,28 @@ Create a `.env` file in the project root (do not commit it):
 ---
 
 ## Verify
-Basic health:
+## Verify API Endpoints
 
-GET http://localhost:3000/api/v1/healthz
-GET http://localhost:3000/api/v1/readyz
+ Basic health
+```bash
+- GET http://localhost:3000/api/v1/healthz
+- GET http://localhost:3000/api/v1/readyz
 
+### Auth
+- POST http://localhost:3000/api/v1/auth/register
+- POST http://localhost:3000/api/v1/auth/login
+- GET http://localhost:3000/api/v1/auth/me  
+  (with `Authorization: Bearer <token>`)
 
-Auth:
+### Rooms
+- POST http://localhost:3000/api/v1/rooms (admin)
+- GET http://localhost:3000/api/v1/rooms (any logged-in user)
+- POST http://localhost:3000/api/v1/rooms/search (search active rooms)
 
-POST http://localhost:3000/api/v1/auth/register
-POST http://localhost:3000/api/v1/auth/login
-GET http://localhost:3000/api/v1/auth/me (with Authorization: Bearer <token>)
-
-
-Rooms:
-
-POST http://localhost:3000/api/v1/rooms (admin)
-GET http://localhost:3000/api/v1/rooms (any logged-in user)
-POST http://localhost:3000/api/v1/rooms/search (Search active rooms) 
-
-
-Bookings:
-
-POST http://localhost:3000/api/v1/bookings (student/faculty)
-GET http://localhost:3000/api/v1/bookings/my-bookings
-GET http://localhost:3000/api/v1/bookings/my-stats
-GET http://localhost:3000/api/v1/bookings/all (admin)
-GET http://localhost:3000/api/v1/bookings/search (admin)
-GET http://localhost:3000/api/v1/bookings/dashboard (admin)
+### Bookings
+- POST http://localhost:3000/api/v1/bookings (student/faculty)
+- GET http://localhost:3000/api/v1/bookings/my-bookings
+- GET http://localhost:3000/api/v1/bookings/my-stats
+- GET http://localhost:3000/api/v1/bookings/all (admin)
+- GET http://localhost:3000/api/v1/bookings/search (admin)
+- GET http://localhost:3000/api/v1/bookings/dashboard (admin)
