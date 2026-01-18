@@ -361,3 +361,80 @@ export const searchBookings = asyncHandler(async (req, res) => {
     }, "Bookings fetched")
   );
 });
+
+// --- Calendar View (Month) ---
+export const getCalendarBookings = asyncHandler(async (req, res) => {
+  const { year, month, resourceId } = req.query;
+
+  if (!year || !month) {
+    throw new ApiError(400, "year and month are required (e.g., ?year=2024&month=1)");
+  }
+
+  const startOfMonth = new Date(parseInt(year), parseInt(month) - 1, 1);
+  const endOfMonth = new Date(parseInt(year), parseInt(month), 0, 23, 59, 59);
+
+  const filter = {
+    startTime: { $gte: startOfMonth, $lte: endOfMonth },
+    status: { $in: ["pending", "approved"] },
+  };
+
+  if (resourceId) filter.resourceId = resourceId;
+
+  const bookings = await Booking.find(filter)
+    .populate("user", "fullName")
+    .populate("resourceId", "name")
+    .sort({ startTime: 1 });
+
+  // Format for calendar display
+  const calendarData = bookings.map((b) => ({
+    id: b._id,
+    title: b.purpose,
+    start: b.startTime,
+    end: b.endTime,
+    status: b.status,
+    user: b.user?.fullName,
+    resource: b.resourceId?.name,
+    resourceType: b.resourceType,
+  }));
+
+  return res.status(200).json(new ApiResponse(200, calendarData, "Calendar data fetched"));
+});
+
+// --- Check Room Availability for a Date ---
+export const checkAvailability = asyncHandler(async (req, res) => {
+  const { resourceId, date } = req.query;
+
+  if (!resourceId || !date) {
+    throw new ApiError(400, "resourceId and date are required");
+  }
+
+  const startOfDay = new Date(date);
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date(date);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  const bookings = await Booking.find({
+    resourceId,
+    status: { $in: ["pending", "approved"] },
+    $or: [
+      { startTime: { $gte: startOfDay, $lte: endOfDay } },
+      { endTime: { $gte: startOfDay, $lte: endOfDay } },
+    ],
+  }).select("startTime endTime status purpose");
+
+  // Generate available slots (9 AM to 6 PM, 1-hour slots)
+  const bookedSlots = bookings.map((b) => ({
+    start: b.startTime,
+    end: b.endTime,
+    status: b.status,
+  }));
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      date,
+      resourceId,
+      bookedSlots,
+    }, "Availability checked")
+  );
+});

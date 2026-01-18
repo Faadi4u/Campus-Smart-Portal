@@ -7,7 +7,9 @@ import {
   cancelMyBooking,
   getDashboardStats,
   getMyBookingStats,
-  searchBookings
+  searchBookings,
+  getCalendarBookings,
+  checkAvailability,
 } from "../controllers/booking.controller.js";
 import { auth, requireRole } from "../middlewares/auth.middlewares.js";
 
@@ -20,6 +22,10 @@ router.post("/", createBooking);
 router.get("/my-bookings", getMyBookings);
 router.get("/my-stats", getMyBookingStats);
 router.patch("/:id/cancel", cancelMyBooking);
+
+// Calendar & Availability
+router.get("/calendar", getCalendarBookings);
+router.get("/availability", checkAvailability);
 
 // Admin routes
 router.get("/all", requireRole("admin"), getAllBookings);
