@@ -73,8 +73,8 @@ Server runs at: `http://localhost:3000`
     - `PATCH /api/v1/bookings/:id/cancel` – cancel own pending/approved booking
 
   - Calendar & Availability:
-    - `PATCH /api/v1/bookings/calendar` – to maek calendar booking
-    - `PATCH /api/v1/bookings/availability` – checking availability of rooms for booking
+    - `GET /api/v1/bookings/calendar` – to maek calendar booking
+    - `GET /api/v1/bookings/availability` – checking availability of rooms for booking
     
   - Admin routes (auth + admin role):
     - `GET  /api/v1/bookings/all` – list all bookings
